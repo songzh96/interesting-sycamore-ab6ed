@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Welcome to Jekyll!2
-date: 2020-08-29 12:29:00 +0700
+date: 2020-08-29 13:00:00 +0800
 categories: jekyll update
 ---
 VL53L0X是新一代的飞行时间（ToF）激光测距模块，采用当今市场上最小的封装，与传统技术不同，无论目标反射率如何，都能提供精确的距离测量。 它可以测量高达2m的绝对距离，在性能范围内设定新的基准，为各种新应用打开了大门。
@@ -26,17 +26,17 @@ I2C仅允许每个设备一个地址，因此您必须确保每个I2C设备都�
 
 \!\[image.png\](https://upload-images.jianshu.io/upload\_images/3246153-2a951a1b34f7f8fe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-ESP8266 \|&nbsp;VL53L0X
+ESP8266 \| VL53L0X
 
 \-\|-
 
 D1\| SCL\|
 
-D2\| SDA\|&nbsp;
+D2\| SDA\|
 
-Vin \|&nbsp;5v \|
+Vin \| 5v \|
 
-GND \|&nbsp;GND \|
+GND \| GND \|
 
 **\#\# 软件代码**
 
@@ -44,61 +44,55 @@ GND \|&nbsp;GND \|
 
 \#include "Adafruit\_VL53L0X.h"
 
-Adafruit\_VL53L0X lox =&nbsp;Adafruit\_VL53L0X();
+Adafruit\_VL53L0X lox = Adafruit\_VL53L0X();
 
 void setup() \{
 
-&nbsp; Serial.begin(115200);
+ Serial.begin(115200);
 
-&nbsp; // wait until serial port opens for native USB devices
+ // wait until serial port opens for native USB devices
 
-&nbsp; while (\! Serial) \{
+ while (\! Serial) \{
 
-&nbsp; &nbsp; delay(1);
+ delay(1);
 
-&nbsp; \}
+ \}
 
-&nbsp;&nbsp;
+ Serial.println("Adafruit VL53L0X test");
 
-&nbsp; Serial.println("Adafruit VL53L0X test");
+ if (\!lox.begin()) \{
 
-&nbsp; if (\!lox.begin()) \{
+ Serial.println(F("Failed to boot VL53L0X"));
 
-&nbsp; &nbsp; Serial.println(F("Failed to boot VL53L0X"));
+ while(1);
 
-&nbsp; &nbsp; while(1);
+ \}
 
-&nbsp; \}
+ // power
 
-&nbsp; // power&nbsp;
-
-&nbsp; Serial.println(F("VL53L0X API Simple Ranging example\\n\\n"));&nbsp;
+ Serial.println(F("VL53L0X API Simple Ranging example\\n\\n"));
 
 \}
 
 void loop() \{
 
-&nbsp; VL53L0X\_RangingMeasurementData\_t measure;
+ VL53L0X\_RangingMeasurementData\_t measure;
 
-&nbsp; &nbsp;&nbsp;
+ Serial.print("Reading a measurement… ");
 
-&nbsp; Serial.print("Reading a&nbsp;measurement... ");
+ lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout\!
 
-&nbsp; lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout\!
+ if (measure.RangeStatus \!= 4) \{ // phase failures have incorrect data
 
-&nbsp; if (measure.RangeStatus \!= 4) \{&nbsp; // phase failures have incorrect data
+ Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
 
-&nbsp; &nbsp; Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
+ \} else \{
 
-&nbsp; \}&nbsp;else \{
+ Serial.println(" out of range ");
 
-&nbsp; &nbsp; Serial.println(" out of range ");
+ \}
 
-&nbsp; \}
-
-&nbsp; &nbsp;&nbsp;
-
-&nbsp; delay(100);
+ delay(100);
 
 \}
 
